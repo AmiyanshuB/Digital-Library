@@ -7,7 +7,7 @@
 #define MAX_NO_OF_BOOKS 5000
 #define MAX_AUTHOR_OF_A_BOOK 20
 #define MAX_CHAR_IN_NAME 100
-#define FILE_NAME "Digital Library.csv"
+#define FILE_NAME "Digital Library.bin"
 int numberOfBooks = 0;
 int notReady = 0;
 
@@ -39,27 +39,29 @@ void Message(const char* message)
 void headMessage(const char *message)
 {
     system("cls");
-    printf("\t\t\t###########################################################################");
-    printf("\n\t\t\t############                                                   ############");
-    printf("\n\t\t\t############                  DIGITAL LIBRARY                  ############");
-    printf("\n\t\t\t############                                                   ############");
-    printf("\n\t\t\t###########################################################################");
-    printf("\n\t\t\t---------------------------------------------------------------------------\n");
+    char ch;
+    FILE*fp = fopen("headmsg.txt","r");
+    while((ch = fgetc(fp)) != EOF)
+    {
+        printf("%c",ch);
+    }
+    fclose(fp);
+
     Message(message);
     printf("\n\t\t\t----------------------------------------------------------------------------");
 }
 void welcomeMessage()
 {
     headMessage("DSA - ASSIGMENT OF TEAM 13 ");
-    printf("\n\n\n\n\n");
-    printf("\n\t\t\t       **-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**\n");
-    printf("  \t\t\t             =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-    printf("\n\t\t\t             =                 WELCOME                   =");
-    printf("\n\t\t\t             =                   TO                      =");
-    printf("\n\t\t\t             =                 DIGITAL                   =");
-    printf("\n\t\t\t             =                 Library                   =");
-    printf("\n\t\t\t             =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-    printf("\n\t\t\t        **-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**-**\n");
+    printf("\n\n\n");
+    char ch;
+    FILE*fp = fopen("welcome.txt","r");
+    printf("\t\t\t");
+    while((ch = fgetc(fp)) != EOF)
+    {
+        printf("%c",ch);
+    }
+    fclose(fp);
     printf("\n\n\n\t\t\t Enter any key to continue.....");
     getchar();
 }
@@ -331,7 +333,7 @@ int main()
     welcomeMessage();
     while(1)
     {
-        temp = readingFromaDataBase();
+        //temp = readingFromaDataBase();
         headMessage("MAIN MENU");
         printf("\n\n\n\t\t\t1.Add Book:");
         printf("\n\t\t\t2.Search Books Between Two Given Years: ");
