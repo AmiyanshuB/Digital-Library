@@ -7,20 +7,21 @@
 #define MAX_NO_OF_BOOKS 5000
 #define MAX_AUTHOR_OF_A_BOOK 20
 #define MAX_CHAR_IN_NAME 100
+//Giving A Name To The File
 #define FILE_NAME "Digital Library.bin"
 int numberOfBooks = 0;
 int notReady = 0;
-
+//Declaring Structure Book
 typedef struct
 {
     long long int ISBN;
     char Name[MAX_CHAR_IN_NAME];
-    int numberOfAuthors;
+    int numberOfAuthors;//contains the information of number of authors as number of authors will be different for different books
     char author[MAX_CHAR_IN_NAME][MAX_AUTHOR_OF_A_BOOK];
     char publisher[MAX_CHAR_IN_NAME];
     int year;
 }BOOK;
-///Someones
+//Calculated the number of spaces and decided whether to print the message
 void Message(const char* message)
 {
     int len =0;
@@ -36,11 +37,17 @@ void Message(const char* message)
     //print message
     printf("%s",message);
 }
+//Printing The header of the program
 void headMessage(const char *message)
 {
     system("cls");
     char ch;
     FILE*fp = fopen("headmsg.txt","r");
+    if(!fp)
+    {
+        printf("Memory Error!!");
+        exit(1);
+    }
     while((ch = fgetc(fp)) != EOF)
     {
         printf("%c",ch);
@@ -48,14 +55,18 @@ void headMessage(const char *message)
     fclose(fp);
 
     Message(message);
-    printf("\n\t\t\t----------------------------------------------------------------------------");
 }
+//Printing welcome messages
 void welcomeMessage()
 {
-    headMessage("DSA - ASSIGMENT OF TEAM 13 ");
     printf("\n\n\n");
     char ch;
-    FILE*fp = fopen("welcome.txt","r");
+    FILE*fp = fopen("welcome.txt","r");//File from where the fxn reading the data
+    if(!fp)
+    {
+        printf("Memory Error!!!");
+        exit(0);
+    }
     printf("\t\t\t");
     while((ch = fgetc(fp)) != EOF)
     {
@@ -65,7 +76,136 @@ void welcomeMessage()
     printf("\n\n\n\t\t\t Enter any key to continue.....");
     getchar();
 }
+//Display function Basically to display all the books: Sorted and All the books
+void viewFxn(BOOK* b)
+{
+    printf("\nSr.No\t\tISBN No\t\t\tYear Of Publication\t\tName of the Book\t\t Author\n\n");
+    printf("---------------------------------------------------------------------------------------------------------------------------------------------\n");
+    for(int i = 0; i < numberOfBooks; i++)
+    {
+            printf("  %d.\t\t%lld\t\t\t%d\t\t\t%s\t",i+1,b[i].ISBN,b[i].year,b[i].Name);
+            printf("\n\t\t\t\t\t\t\t\t\t\t\t\t\t");
+            for(int j = 0; j < b[i].numberOfAuthors; j++)
+            {
+                if(b[i].numberOfAuthors == 1)
+                {
+                    printf("%s",b[i].author[j]);
 
+                }
+                else
+                {
+                        printf("%s,",b[i].author[j]);
+                }
+            }
+            printf("\n---------------------------------------------------------------------------------------------------------------------------------------------\n");
+    }
+}
+//Not found ASCII Message
+void errorASCII(void)
+{
+    char ch;
+    FILE*fp = fopen("error.txt","r");
+    if(!fp)
+    {
+        printf("Memory error");
+        exit(1);
+    }
+    while((ch = fgetc(fp)) != EOF)
+    {
+        printf("%c",ch);
+    }
+    fclose(fp);
+}
+//Success Message
+void successASCII(void)
+{
+    char ch;
+    FILE*fp = fopen("Success.txt","r");
+    if(fp == NULL)
+    {
+        errorASCII();
+    }
+    while((ch = fgetc(fp)) != EOF)
+    {
+        printf("%c",ch);
+    }
+    fclose(fp);
+}
+//Message when a particular book is found
+void found(void)
+{
+    char ch;
+    FILE*fp = fopen("found.txt","r");
+    if(!fp)
+    {
+        printf("Memory error");
+        exit(1);
+    }
+    while((ch = fgetc(fp)) != EOF)
+    {
+        printf("%c",ch);
+    }
+    fclose(fp);
+}
+void empty(void)
+{
+    char ch;
+    FILE*fp = fopen("empty.txt","r");
+    if(!fp)
+    {
+        printf("Memory error");
+        exit(1);
+    }
+    while((ch = fgetc(fp)) != EOF)
+    {
+        printf("%c",ch);
+    }
+    fclose(fp);
+}
+void error1(void)
+{
+    char ch;
+    FILE*fp = fopen("error1.txt","r");
+    if(!fp)
+    {
+        printf("Memory error");
+        exit(1);
+    }
+    while((ch = fgetc(fp)) != EOF)
+    {
+        printf("%c",ch);
+    }
+    fclose(fp);
+}
+//Kind of Display function which display only some selected books
+void findViewFxn(BOOK* b, int counter)
+{
+     printf("\nSr.No\t\tISBN No\t\t\tYear Of Publication\t\tName of the Book\t\t Author\n\n");
+    printf("---------------------------------------------------------------------------------------------------------------------------------------------\n");
+    for(int i = 0; i < counter; i++)
+    {
+            printf("  %d.\t\t%lld\t\t\t%d\t\t\t%s\t",i+1,b[i].ISBN,b[i].year,b[i].Name);
+            printf("\n\t\t\t\t\t\t\t\t\t\t\t\t\t");
+            for(int j = 0; j < b[i].numberOfAuthors; j++)
+            {
+                if(b[i].numberOfAuthors == 1)
+                {
+                    printf("%s",b[i].author[j]);
+
+                }
+                else
+                {
+                        printf("%s,",b[i].author[j]);
+                }
+            }
+            printf("\n---------------------------------------------------------------------------------------------------------------------------------------------\n");
+    }
+}
+///WE HAVE USED "ab+" AND "rb" INSTEAS OF a AND r BECAUSE I AM USING A BINARY FILE RATHER THEN ANY READABLE FILE AND ab+ and rb ARE USED FOR A BINARY FILE//
+///FUNCTIONALITY OF THESE MODES ARE SAME AS a and r MODES//
+///"ab+" - APPAND AT THE END OF THE BINARY FILE//
+///"rb" - READ FROM THE BINARY FILE//
+//Function to inser inside a data base/ file
 void insertInADataBase()
 {
     BOOK b;
@@ -107,23 +247,26 @@ void insertInADataBase()
     //writing inside a file
     fwrite(&b, sizeof(b), 1, fp);
     fclose(fp);
+    successASCII();
 }
+//This function Fetches Data form the file
 BOOK *readingFromaDataBase()
 {
-    BOOK Book;
+    BOOK Book;//Declaring a book buffer!!
     int i = 0;
     int k = i;
-    BOOK*temp = malloc(sizeof(BOOK)*MAX_NO_OF_BOOKS);
+    BOOK*temp = malloc(sizeof(BOOK)*MAX_NO_OF_BOOKS);//declaring a array dynamically
     FILE*fp = fopen(FILE_NAME,"rb");
     if(fp == NULL)
     {
-        exit(1);
+        return NULL;
     }
-    if(fseek(fp, 0 ,SEEK_SET) != 0)
+    if(fseek(fp, 0 ,SEEK_SET) != 0)//Bringing the file pointer to the starting of the file and then  checking whether it is empty or not//
     {
-        exit(1);
+        printf("The File is still not created");
+        return NULL;
     }
-    while(fread(&Book, sizeof(BOOK), 1,fp))
+    while(fread(&Book, sizeof(BOOK), 1,fp))//Reading the file by putting the data inside the book buffer and then storing it into a array temp.....
     {
         temp[i] = Book;
         i++;
@@ -133,25 +276,47 @@ BOOK *readingFromaDataBase()
     return temp;
 
 }
-int booksInBetweenAGivernYears(BOOK *temp,int year1, int year2)
+int booksInBetweenGivernYears(BOOK *temp,int year1, int year2)
 {
+    BOOK b[numberOfBooks];
     int counter = 0;
+    if(year2 < year1)
+    {
+        printf("\n\t\t\tPlease enter valid year!!!");
+        error1();
+        printf("\n\t\t\tPress any key to return to main menu.....");
+        fflush(stdin);
+        getchar();
+        return 1;
+    }
     for(int i = 0; i < numberOfBooks; i++)
     {
         if(year1 <= temp[i].year && year2 >= temp[i].year)
         {
+            b[counter] = temp[i];
             counter++;
-            printf("\n\t\t\t%d.%s\n",counter,temp[i].Name);
         }
     }
-    printf("\n\n\n\t\t\t Enter any key to continue.....");
-    fflush(stdin);
-    getchar();
-    return counter;
+    if(counter == 0)
+    {
+        errorASCII();
+    }
+    else
+    {
+        found();
+        printf("Library has %d books between the years %d and %d and following is the list of books\n",counter,year1,year2);
+        findViewFxn(b,counter);
+        printf("\n\n\n\t\t\t Enter any key to return to main menu.....");
+    }
+        fflush(stdin);
+        getchar();
+        return counter;
+
 }
+//Function to find the book by a given author
 void bookByAGivenAuthor(BOOK *b, char authorName[], int n)
 {
-
+    BOOK temp[n];
     int counter = 0;
     int j = 0;
     bool FoundBook= false;
@@ -163,29 +328,41 @@ void bookByAGivenAuthor(BOOK *b, char authorName[], int n)
           if(strcmp(authorName, b[i].author[j]) == 0)
           {
               FoundBook = true;
+              temp[counter] = b[i];
               counter++;
-              printf("\n\t\t\t%d. %s\n",counter,b[i].Name);
           }
 
         }
     }
-    if(true)
+    if(FoundBook == true)
     {
-        printf("\n\n\n\t\t\t: ) %d Books By The Author %s is Found \n\t\t\tEnter any key to continue.....",counter,authorName);
+        found();
+        printf("\n\n\n\t\t\t\t: ) Yes We Have %d Books By The Author %s  \n",counter,authorName);
+        findViewFxn(temp, counter);
+        printf("\n\t\t\t\tEnter any key to return to main menu.....");
         fflush(stdin);
         getchar();
     }
 
     if(FoundBook == false)
     {
-        printf(": ( Sorry Don't Found Any Book By the Author");
+        errorASCII();
+        printf("\n\t\t\tPress any key to return to main menu.....");
+        fflush(stdin);
+        getchar();
     }
 
 }
+//Sort By Name of the books
 void sortByName(BOOK *b,int n)
 {
+    if(numberOfBooks == 0)
+    {
+        empty();
+        return;
+    }
     int k = 0;
-    BOOK smallest,temp;
+    BOOK temp;
     for(int i = 0; i < n -1; i++)
     {
             for(int j = i + 1; j < n; j++)
@@ -204,18 +381,28 @@ void sortByName(BOOK *b,int n)
         }
 
     }
+    if(n == 0)
+    {
+        errorASCII();
+        printf("\n\t\t\tPress any key to return to main menu.....");
+        fflush(stdin);
+        getchar();
+    }
     printf("\n\t\t\t\tBooks in Sorted Oreder:\n");
-    for(int i = 0; i < n; i++)
-        {
-            printf("\n%d.%s",i + 1,b[i].Name);
-        }
+    viewFxn(b);
 }
 void sortByISBN(BOOK* b,int n)
 {
+    if(numberOfBooks == 0)
+    {
+        empty();
+        return;
+    }
 
     int counter=1;
-    while(counter<n){
-    for(int i=0;i<n-counter;i++)
+    while(counter < n)
+    {
+    for(int i=0; i < n - counter; i++)
         {
             if(b[i].ISBN>b[i+1].ISBN)
             {
@@ -226,53 +413,74 @@ void sortByISBN(BOOK* b,int n)
         }
 counter++;
 }
-
-for(int i=0;i<n;i++)
-    {
-    printf("--NAME--%s\t",b[i].Name);
-
-     printf("---ISBN--:%lli",b[i].ISBN);
-     printf("\n");
-   }
+viewFxn(b);
 }
 void booksInAGivenYear(BOOK* b, int year1)
 {
+    BOOK temp[numberOfBooks];
     int counter = 0;
     for(int i = 0; i < numberOfBooks; i++)
     {
         if(year1 == b[i].year)
         {
             counter++;
-            printf("%d.%s",counter, b[i].Name);
+            temp[counter] = b[i];
         }
     }
     if(counter == 0)
     {
-            printf(": ( No Book Found!!!");
+            errorASCII();
+            return;
     }
+    findViewFxn(temp, counter);
+}
+void record(void)
+{
+    system("cls");
+    char ch;
+    FILE*fp = fopen("record.txt","r");
+    if(fp == NULL)
+    {
+        printf("ERROR 404!!!!");
+    }
+    while((ch = fgetc(fp)) != EOF)
+    {
+        printf("%c",ch);
+    }
+    fclose(fp);
+
 }
 void bookByAGivenPublisher(BOOK* temp)
 {
+    BOOK b[numberOfBooks];
     char publisher[MAX_CHAR_IN_NAME];
     int count = 0;
-    printf("Enter The Name Of Publisher = ");
+    printf("\n\t\t\tEnter The Name Of Publisher = ");
     fflush(stdin);
     fgets(publisher,MAX_CHAR_IN_NAME,stdin);
     for(int i = 0; i < numberOfBooks; i++)
     {
         if(strcmp(publisher , temp[i].publisher) == 0)
         {
+            b[count] = temp[i];
             count++;
-            printf("%d.%s",count,temp[i].Name);
         }
     }
     if(count == 0)
     {
-        printf(": ( No Book By The Publisher");
+        printf("\n\t\t\t\t: ( No Book By The Publisher\n");
+        error1();
+        return;
     }
+    findViewFxn(b, count);
 }
 void sortByAuthor(BOOK *b,int n)
 {
+    if(numberOfBooks == 0)
+    {
+        empty();
+        return;
+    }
     int k = 0;
     BOOK smallest,temp;
     for(int i = 0; i < n -1; i++)
@@ -293,35 +501,37 @@ void sortByAuthor(BOOK *b,int n)
         }
 
     }
-    printf("Books in Sorted Oreder By The Names Of Authrs:\n");
-    for(int i = 0; i < n; i++)
-        {
-            printf("\n%d.%s",i + 1,b[i].Name);
-        }
+    printf("\n\n\t\t\t\t\tBooks in Sorted Order By The Names Of Authors:\n\n");
+    viewFxn(b);
 }
 void view(BOOK *b)
 {
-    printf("\nSr.No\tName Of The Book\tYear Of Publication\t\t\tISBN No\t\t Author\n");
-    printf("--------------------------------------------------------------------------\n");
-    for(int i = 0; i < numberOfBooks; i++)
-    {
-            printf("%d.\t%lld\t\t\t\t\t%d\t\t\t\t%s\t\t",i+1,b[i].ISBN,b[i].year,b[i].Name);
-            for(int j = 0; j < b[i].numberOfAuthors; j++)
-            {
-                if(b[i].numberOfAuthors == 1)
-                {
-                    printf("%s",b[i].author[j]);
-
-                }
-                else
-                {
-                        printf("%s,",b[i].author[j]);
-                }
-            }
-             printf("\n");
-    }
-
+    system("cls");
+    record();
+    printf("\n\n");
+    viewFxn(b);
 }
+void message(void)
+{
+    system("cls");
+    char ch;
+    FILE*fp = fopen("Message.txt","r");
+                    if(fp == NULL)
+                    {
+                    printf("ERROR 404!!!!");
+                    return;
+                    }
+                    while((ch = fgetc(fp)) != EOF)
+                    {
+                    printf("%c",ch);
+                    }
+                    fclose(fp);
+                    printf("Press any key to go to main menu....");
+                    fflush(stdin);
+                    getchar();
+                    return;
+}
+
 
 
 
@@ -333,7 +543,8 @@ int main()
     welcomeMessage();
     while(1)
     {
-        //temp = readingFromaDataBase();
+        temp = readingFromaDataBase();
+        jump:
         headMessage("MAIN MENU");
         printf("\n\n\n\t\t\t1.Add Book:");
         printf("\n\t\t\t2.Search Books Between Two Given Years: ");
@@ -343,35 +554,50 @@ int main()
         printf("\n\t\t\t6.Search Books In A Given Year:");
         printf("\n\t\t\t7.Search Books By a Given Publisher:");
         printf("\n\t\t\t8.Sort By Author: ");
-        printf("\n\t\t\t9.Print The Whole Library");
+        printf("\n\t\t\t9.Print The Whole Library:");
+        printf("\n\t\t\t10.Credits:");
+        printf("\n\t\t\t11.Message!!");
+        printf("\n\t\t\t");
         scanf("%d", &choice);
         switch(choice)
         {
             case 1:insertInADataBase();
                 temp = readingFromaDataBase();
-                printf("\n\n\n\t\t\t: ) Book Successfully Added Enter any key to continue.....");
+                printf("\n\t\t\tEnter any key to return to main menu.....");
                 fflush(stdin);
                 getchar();
                 break;
             case 2:headMessage("Find Book In Between Two Given Years");
+            if(numberOfBooks == 0)
+              {
+                empty();
+                printf("\n\t\t\tThe Library Is Currently Empty Please Enter 1 To Insert Into The Library");
+                printf("\n\t\t\tPress any key to return to main menu.....");
+                fflush(stdin);
+                getchar();
+                break;
+              }
                 printf("\n\t\t\tYear1:");
                 scanf("%d",&year1);
                 printf("\n\t\t\tYear2:");
                 scanf("%d",&year2);
-                int k= booksInBetweenAGivernYears(temp,year1,year2);
+                int k= booksInBetweenGivernYears(temp,year1,year2);
                 break;
-            case 3:if(numberOfBooks == 0)
+            case 3:headMessage("Find Book By Author");
+                if(numberOfBooks == 0)
                 {
-                printf("\n\t\t\t: ( There is no book in the library!!");
+                    empty();
+                    printf("\n\t\t\tPress any key to return to main menu.....");
+                fflush(stdin);
+                getchar();
                 break;
                 }
-                headMessage("Find Book By Author");
-                printf("\n\t\t\tAuthor's Name: ");
-                scanf("\n%[^\n]s",author);
-                printf("\n\t\t\tBooks By Author:");
-                bookByAGivenAuthor(temp, author, numberOfBooks);
 
-            break;
+                printf("\n\n\t\t\t\t\tAuthor's Name: ");
+                scanf("\n%[^\n]s",author);
+                printf("\n\t\t\t\t\tBooks By Author:\n\n");
+                bookByAGivenAuthor(temp, author, numberOfBooks);
+                break;
             case 4:headMessage("Sorting By Name Of Books");
                 sortByName(temp,numberOfBooks);
                 printf("Press any key to go to main menu....");
@@ -386,14 +612,32 @@ int main()
                 getchar();
             break;
             case 6:headMessage("List Of Books In A Particular Year");
-                printf("Year:");
-            scanf("%d",&year1);
+            if(numberOfBooks == 0)
+            {
+                empty();
+                printf("Press any key to go to main menu....");
+                fflush(stdin);
+                getchar();
+                break;
+            }do{
+                printf("\n\t\t\t\tYear:");
+                    scanf("%d",&year1);
+                }
+                while(year1 < 0 || year1 > 2022);
             booksInAGivenYear(temp, year1);
             printf("Press any key to go to main menu....");
             fflush(stdin);
             getchar();
             break;
             case 7:headMessage("Find Book By Publishers Name");
+            if(numberOfBooks == 0)
+            {
+                empty();
+                printf("Press any key to go to main menu....");
+                fflush(stdin);
+                getchar();
+                break;
+            }
                 bookByAGivenPublisher(temp);
                 printf("Press any key to go to main menu....");
                 fflush(stdin);
@@ -406,11 +650,40 @@ int main()
             getchar();
             break;
             case 9: headMessage("List Of Books In A Particular Year");
+            if(numberOfBooks == 0)
+            {
+                empty();
+                printf("Press any key to return to main menu....");
+                fflush(stdin);
+                getchar();
+                break;
+            }
             view(temp);
             printf("Press any key to go to main menu....");
             fflush(stdin);
             getchar();
             break;
+            case 10: headMessage("CREDITS : ) ");
+                    char ch;
+                    FILE*fp = fopen("Cradits.txt","r");
+                    if(fp == NULL)
+                    {
+                    printf("ERROR 404!!!!");
+                    break;
+                    }
+                    while((ch = fgetc(fp)) != EOF)
+                    {
+                    printf("%c",ch);
+                    }
+                    fclose(fp);
+                    printf("Press any key to go to main menu....");
+                    fflush(stdin);
+                    getchar();
+                    break;
+            case 11: message();
+            break;
+
+
 
         }
     }
