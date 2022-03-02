@@ -177,6 +177,21 @@ void error1(void)
     }
     fclose(fp);
 }
+void sort(void)
+{
+    char ch;
+    FILE*fp = fopen("Sort.txt","r");
+    if(!fp)
+    {
+        printf("Memory error");
+        exit(1);
+    }
+    while((ch = fgetc(fp)) != EOF)
+    {
+        printf("%c",ch);
+    }
+    fclose(fp);
+}
 //Kind of Display function which display only some selected books
 void findViewFxn(BOOK* b, int counter)
 {
@@ -254,7 +269,6 @@ BOOK *readingFromaDataBase()
 {
     BOOK Book;//Declaring a book buffer!!
     int i = 0;
-    int k = i;
     BOOK*temp = malloc(sizeof(BOOK)*MAX_NO_OF_BOOKS);//declaring a array dynamically
     FILE*fp = fopen(FILE_NAME,"rb");
     if(fp == NULL)
@@ -361,6 +375,7 @@ void sortByName(BOOK *b,int n)
         empty();
         return;
     }
+    sort();
     int k = 0;
     BOOK temp;
     for(int i = 0; i < n -1; i++)
@@ -388,7 +403,7 @@ void sortByName(BOOK *b,int n)
         fflush(stdin);
         getchar();
     }
-    printf("\n\t\t\t\tBooks in Sorted Oreder:\n");
+    printf("\n\n\t\t\t\t\t\tBooks in Sorted Order:\n");
     viewFxn(b);
 }
 void sortByISBN(BOOK* b,int n)
@@ -413,6 +428,7 @@ void sortByISBN(BOOK* b,int n)
         }
 counter++;
 }
+sort();
 viewFxn(b);
 }
 void booksInAGivenYear(BOOK* b, int year1)
@@ -423,8 +439,8 @@ void booksInAGivenYear(BOOK* b, int year1)
     {
         if(year1 == b[i].year)
         {
-            counter++;
             temp[counter] = b[i];
+            counter++;
         }
     }
     if(counter == 0)
@@ -432,6 +448,7 @@ void booksInAGivenYear(BOOK* b, int year1)
             errorASCII();
             return;
     }
+    found();
     findViewFxn(temp, counter);
 }
 void record(void)
@@ -454,6 +471,7 @@ void bookByAGivenPublisher(BOOK* temp)
 {
     BOOK b[numberOfBooks];
     char publisher[MAX_CHAR_IN_NAME];
+    char m[MAX_CHAR_IN_NAME];
     int count = 0;
     printf("\n\t\t\tEnter The Name Of Publisher = ");
     fflush(stdin);
@@ -466,12 +484,15 @@ void bookByAGivenPublisher(BOOK* temp)
             count++;
         }
     }
+    strcpy(m, publisher);
     if(count == 0)
     {
         printf("\n\t\t\t\t: ( No Book By The Publisher\n");
         error1();
         return;
     }
+    found();
+    printf("Yeah! I Found %d books form the Publisher , following is the list!!!\n\n",count, m);
     findViewFxn(b, count);
 }
 void sortByAuthor(BOOK *b,int n)
@@ -501,6 +522,7 @@ void sortByAuthor(BOOK *b,int n)
         }
 
     }
+    sort();
     printf("\n\n\t\t\t\t\tBooks in Sorted Order By The Names Of Authors:\n\n");
     viewFxn(b);
 }
@@ -544,7 +566,6 @@ int main()
     while(1)
     {
         temp = readingFromaDataBase();
-        jump:
         headMessage("MAIN MENU");
         printf("\n\n\n\t\t\t1.Add Book:");
         printf("\n\t\t\t2.Search Books Between Two Given Years: ");
